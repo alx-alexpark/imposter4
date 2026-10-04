@@ -11,10 +11,17 @@ let
   ] ++ (args.extraPublicKeys or []); # this is used for unit-testing this module and can be removed if not needed
 in
 {
-  users.users.root.openssh.authorizedKeys.keys = sshKeys;
+  # Users and passwords come only from this config; SSH keys are the only way in
+  users.mutableUsers = false;
+
+  users.users.root = {
+    hashedPassword = "!";
+    openssh.authorizedKeys.keys = sshKeys;
+  };
 
   users.users.alex = {
     isNormalUser = true;
+    hashedPassword = "!";
     extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keys = sshKeys;
   };
