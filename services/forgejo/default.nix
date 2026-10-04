@@ -9,7 +9,7 @@ let
   # Keep false until the install wizard is done over an SSH tunnel:
   #   ssh -L 3000:127.0.0.1:3000 root@<server>  then open http://localhost:3000
   # Setting it to true turns on Caddy for the domain and exposes git SSH on 222.
-  public = false;
+  public = true;
 
   docker = "${config.virtualisation.docker.package}/bin/docker";
   compose = "${docker} compose -p forgejo -f ${./docker-compose.yml}";
