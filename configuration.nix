@@ -22,8 +22,8 @@
     settings = {
       PasswordAuthentication = false;
       KbdInteractiveAuthentication = false;
+    };
   };
-  }
 
 
   environment.systemPackages = map lib.lowPrio [
