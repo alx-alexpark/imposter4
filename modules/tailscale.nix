@@ -6,5 +6,7 @@
     enable = true;
     # opens UDP 41641 so peers can connect directly instead of via DERP
     openFirewall = true;
+    # keep the host's own resolver instead of MagicDNS
+    extraSetFlags = [ "--accept-dns=false" ];
   };
 }
