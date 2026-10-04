@@ -9,6 +9,7 @@
     ./disk-config.nix
     ./hardware-configuration.nix
     ../../modules/base.nix
+    ../../modules/caddy.nix
     ../../modules/auto-upgrade.nix
     ../../modules/tailscale.nix
     ../../services/forgejo

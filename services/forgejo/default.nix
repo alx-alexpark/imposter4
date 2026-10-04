@@ -52,14 +52,12 @@ in
     };
   };
 
-  services.caddy = lib.mkIf public {
-    enable = true;
-    virtualHosts.${domain}.extraConfig = ''
+  services.caddy.virtualHosts = lib.mkIf public {
+    ${domain}.extraConfig = ''
       reverse_proxy 127.0.0.1:3000
     '';
   };
 
   # Docker publishes 222 itself, but list it so the open ports are visible here.
-  networking.firewall.allowedTCPPorts = lib.optionals public [ 80 443 222 ];
-  networking.firewall.allowedUDPPorts = lib.optionals public [ 443 ];
+  networking.firewall.allowedTCPPorts = lib.optionals public [ 222 ];
 }
