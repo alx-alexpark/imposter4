@@ -2,8 +2,29 @@
   lib,
   pkgs,
   ...
-}:
+} @ args:
+let
+  sshKeys = [
+    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIE4EqdlXF8o8Fdf0v/I8sowP7Rw3tZiY5i/CP131AX5dAAAAC3NzaDp0ZXJtaXVz"
+    # "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID+oJpTmesL5Iiuiz7Bz1xlDZYsDD4dJ3nSoEjyjejfM a@susbook.local"
+    "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIAKWfF9y67GxL3jIFcQfWvTOBOyIPtreimhYpxTHJ3CcAAAABHNzaDo= a@susbook.local"
+  ] ++ (args.extraPublicKeys or []); # this is used for unit-testing this module and can be removed if not needed
+in
 {
+  users.users.root.openssh.authorizedKeys.keys = sshKeys;
+
+  users.users.alex = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+    openssh.authorizedKeys.keys = sshKeys;
+  };
+
+  # alex has no password; login is SSH-only with hardware-backed keys
+  security.sudo = {
+    wheelNeedsPassword = false;
+    execWheelOnly = true;
+  };
+
   services.openssh = {
     enable = true;
     settings = {
