@@ -11,6 +11,7 @@
     ../../modules/base.nix
     ../../modules/auto-upgrade.nix
     ../../services/forgejo
+    ../../services/github-mirror
   ];
 
   boot.loader.grub = {

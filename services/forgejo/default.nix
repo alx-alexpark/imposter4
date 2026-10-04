@@ -6,9 +6,10 @@
 }:
 let
   domain = "git.parkalex.dev";
-  # Keep false until the install wizard is done over an SSH tunnel:
+  # Turns on Caddy for the domain and exposes git SSH on 222. When false the web
+  # UI is only reachable over an SSH tunnel:
   #   ssh -L 3000:127.0.0.1:3000 root@<server>  then open http://localhost:3000
-  # Setting it to true turns on Caddy for the domain and exposes git SSH on 222.
+  # The install wizard is locked (INSTALL_LOCK in docker-compose.yml) either way.
   public = true;
 
   docker = "${config.virtualisation.docker.package}/bin/docker";
@@ -45,7 +46,8 @@ in
       Type = "oneshot";
       RemainAfterExit = true;
       ExecStartPre = generateSecrets;
-      ExecStart = "${compose} up -d --remove-orphans";
+      # --pull so restarts (e.g. the nightly auto-upgrade reboot) pick up patch releases
+      ExecStart = "${compose} up -d --pull always --remove-orphans";
       ExecStop = "${compose} down";
     };
   };

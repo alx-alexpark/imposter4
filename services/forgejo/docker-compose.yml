@@ -20,6 +20,8 @@ services:
       - FORGEJO__server__SSH_DOMAIN=${FORGEJO_DOMAIN}
       - FORGEJO__server__SSH_PORT=222
       - FORGEJO__service__DISABLE_REGISTRATION=true
+      # never serve the install wizard, even if app.ini is lost
+      - FORGEJO__security__INSTALL_LOCK=true
     # provides FORGEJO__database__PASSWD, generated on the server
     env_file: /var/lib/secrets/forgejo.env
     restart: always
