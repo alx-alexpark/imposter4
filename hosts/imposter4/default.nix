@@ -10,6 +10,7 @@
     ./hardware-configuration.nix
     ../../modules/base.nix
     ../../modules/auto-upgrade.nix
+    ../../modules/tailscale.nix
     ../../services/forgejo
     ../../services/github-mirror
   ];
