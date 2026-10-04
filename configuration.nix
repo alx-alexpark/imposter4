@@ -25,6 +25,9 @@
     };
   };
 
+  networking.hostName = "imposter4";
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   environment.systemPackages = map lib.lowPrio [
     pkgs.curl
