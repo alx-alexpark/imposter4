@@ -23,6 +23,9 @@
     efiInstallAsRemovable = true;
   };
 
+  # Lets the hypervisor see the IP, freeze filesystems for snapshots, and shut down cleanly
+  services.qemuGuest.enable = true;
+
   networking.hostName = "imposter4";
 
   time.timeZone = "America/New_York";
