@@ -1,0 +1,37 @@
+# Based on https://docs.searxng.org/admin/installation-docker.html
+# SEARXNG_CONFIG is set by the systemd unit in default.nix.
+networks:
+  searxng:
+    external: false
+
+services:
+  core:
+    image: docker.io/searxng/searxng:latest
+    container_name: searxng-core
+    environment:
+      # the config dir is a read-only store path, so don't try to chown it
+      - FORCE_OWNERSHIP=false
+    # provides SEARXNG_SECRET, generated on the server
+    env_file: /var/lib/secrets/searxng.env
+    restart: always
+    networks:
+      - searxng
+    volumes:
+      # settings.yml, built from the settings in default.nix
+      - ${SEARXNG_CONFIG}:/etc/searxng:ro
+      - /var/lib/searxng/cache:/var/cache/searxng
+    ports:
+      # only ever reachable through Caddy or an SSH tunnel
+      - "127.0.0.1:8888:8080"
+    depends_on:
+      - valkey
+
+  valkey:
+    image: docker.io/valkey/valkey:9-alpine
+    container_name: searxng-valkey
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: always
+    networks:
+      - searxng
+    volumes:
+      - /var/lib/searxng/valkey:/data

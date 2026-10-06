@@ -14,6 +14,7 @@
     ../../modules/tailscale.nix
     ../../services/forgejo
     ../../services/github-mirror
+    ../../services/searxng
   ];
 
   boot.loader.grub = {
