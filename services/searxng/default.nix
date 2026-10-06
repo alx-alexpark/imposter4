@@ -19,7 +19,7 @@ let
   # https://docs.searxng.org/admin/settings/index.html
   settings = {
     use_default_settings = true;
-    general.instance_name = "SearXNG";
+    general.instance_name = "Sussy Baka Search";
     server = {
       base_url = if public then "https://${domain}/" else "http://localhost:8888/";
       # only I can get past basic auth, so there's no one to rate limit
