@@ -28,6 +28,22 @@ let
     };
     # unused while the limiter is off; kept so turning it back on just works
     valkey.url = "valkey://valkey:6379/0";
+    # Entries are merged into the default engine of the same name. Google and
+    # Startpage are off by default; weight ranks Google first, then Startpage,
+    # then the defaults (DuckDuckGo, Brave, ...), which stay on as a fallback.
+    engines = [
+      {
+        name = "google";
+        disabled = false;
+        weight = 3;
+      }
+      {
+        name = "startpage";
+        inactive = false;
+        disabled = false;
+        weight = 2;
+      }
+    ];
   };
 
   configDir = pkgs.runCommand "searxng-config" { } ''
