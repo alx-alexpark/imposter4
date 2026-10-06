@@ -51,6 +51,20 @@ let
     cp ${(pkgs.formats.yaml { }).generate "settings.yml" settings} $out/settings.yml
   '';
 
+  # The home page heading is a hard-coded SearXNG logo, so swap in a copy of
+  # the upstream template that shows instance_name as text instead.
+  # https://github.com/searxng/searxng/blob/master/searx/templates/simple/index.html
+  indexTemplate = pkgs.writeText "index.html" ''
+    {% extends "simple/base.html" %}
+    {% from 'simple/icons.html' import icon_big %}
+    {% block content %}
+    <div class="index">
+        <div class="title" style="background: none"><h1 style="visibility: visible">{{ instance_name }}</h1></div>
+        {% include 'simple/simple_search.html' %}
+    </div>
+    {% endblock %}
+  '';
+
   # The repo is public, so the secret key is generated on the server once.
   generateSecrets = pkgs.writeShellScript "searxng-secrets" ''
     if [ ! -f ${secretsFile} ]; then
@@ -72,7 +86,10 @@ in
     after = [ "docker.service" "network-online.target" ];
     requires = [ "docker.service" ];
     wants = [ "network-online.target" ];
-    environment.SEARXNG_CONFIG = configDir;
+    environment = {
+      SEARXNG_CONFIG = configDir;
+      SEARXNG_INDEX_TEMPLATE = indexTemplate;
+    };
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
@@ -84,12 +101,16 @@ in
   };
 
   services.caddy.virtualHosts = lib.mkIf public {
-    # user sussy; make a new hash with `caddy hash-password`
-    ${domain}.extraConfig = ''
-      basic_auth {
-        sussy $2a$14$caQAFHDF46tWUkQ0A7vMx.tm5hBPRCUefXhO1NKEcJ9X/tmgYHbom
-      }
-      reverse_proxy 127.0.0.1:8888
-    '';
+    ${domain} = {
+      # access logs would record every query, since searches are GET /search?q=...
+      logFormat = "output discard";
+      # user sussy; make a new hash with `caddy hash-password`
+      extraConfig = ''
+        basic_auth {
+          sussy $2a$14$caQAFHDF46tWUkQ0A7vMx.tm5hBPRCUefXhO1NKEcJ9X/tmgYHbom
+        }
+        reverse_proxy 127.0.0.1:8888
+      '';
+    };
   };
 }

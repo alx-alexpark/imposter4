@@ -1,5 +1,5 @@
 # Based on https://docs.searxng.org/admin/installation-docker.html
-# SEARXNG_CONFIG is set by the systemd unit in default.nix.
+# SEARXNG_CONFIG and SEARXNG_INDEX_TEMPLATE are set by the systemd unit in default.nix.
 networks:
   searxng:
     external: false
@@ -19,6 +19,7 @@ services:
     volumes:
       # settings.yml, built from the settings in default.nix
       - ${SEARXNG_CONFIG}:/etc/searxng:ro
+      - ${SEARXNG_INDEX_TEMPLATE}:/usr/local/searxng/searx/templates/simple/index.html:ro
       - /var/lib/searxng/cache:/var/cache/searxng
     ports:
       # only ever reachable through Caddy or an SSH tunnel
